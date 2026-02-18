@@ -66,9 +66,9 @@ final class SpaceFloatingPanel: NSPanel {
     private func positionDefault() {
         guard let screen = NSScreen.main else { return }
         let visibleFrame = screen.visibleFrame
-        let x = visibleFrame.midX - 100
-        let y = visibleFrame.minY + 16
-        setFrameOrigin(NSPoint(x: x, y: y))
+        let posX = visibleFrame.midX - 100
+        let posY = visibleFrame.minY + 16
+        setFrameOrigin(NSPoint(x: posX, y: posY))
     }
 }
 
