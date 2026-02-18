@@ -14,6 +14,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let spaceObserver = SpaceObserver()
     private let iconCreator = IconCreator()
     private let spaceOverlay = SpaceOverlayWindow()
+    private let floatingPanel = SpaceFloatingPanel()
 
     // Track the last active space ID to detect actual space changes
     private var lastActiveSpaceID: String?
@@ -43,6 +44,8 @@ extension AppDelegate: SpaceObserverDelegate {
         }
 
         lastActiveSpaceID = currentActiveID
+
+        floatingPanel.update(spaces: spaces)
 
         let icon = iconCreator.getIcon(for: spaces)
         statusBar.updateStatusBar(withIcon: icon)
