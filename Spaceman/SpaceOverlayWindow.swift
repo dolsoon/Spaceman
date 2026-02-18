@@ -267,7 +267,9 @@ struct SpaceOverlayView: View {
 
     @State private var nameHovered = false
 
-    private var currentIndex: Int?   { viewModel.spaces.firstIndex(where: { $0.isCurrentSpace }) }
+    private var currentIndex: Int? {
+        viewModel.spaces.firstIndex(where: { $0.isCurrentSpace })
+    }
     private var currentSpace: Space? { currentIndex.map { viewModel.spaces[$0] } }
     private var prevSpace: Space? {
         currentIndex.flatMap { $0 > 0 ? viewModel.spaces[$0 - 1] : nil }
