@@ -62,13 +62,13 @@ final class EditInputWindow: NSWindow {
 
         // overlay card의 name text 위치 계산 (AppKit: y는 아래서 위)
         // card layout: paddingTop(24) + navRow(20) + spacing(16) = 60pt from card top
-        let w = overlayFrame.width - 72  // 좌우 패딩 36씩 제외
-        let x = overlayFrame.minX + 36
-        let h: CGFloat = 72
+        let cardWidth = overlayFrame.width - 72  // 좌우 패딩 36씩 제외
+        let cardX = overlayFrame.minX + 36
+        let cardHeight: CGFloat = 72
         let nameTop = overlayFrame.maxY - 24 - 20 - 16
-        let y = nameTop - h
-        textField.frame = NSRect(x: 0, y: 0, width: w, height: h)
-        setFrame(NSRect(x: x, y: y, width: w, height: h), display: true)
+        let cardY = nameTop - cardHeight
+        textField.frame = NSRect(x: 0, y: 0, width: cardWidth, height: cardHeight)
+        setFrame(NSRect(x: cardX, y: cardY, width: cardWidth, height: cardHeight), display: true)
 
         // canBecomeKey=true override로 이제 실제로 key window 가능
         NSApp.setActivationPolicy(.regular)
@@ -162,15 +162,15 @@ final class SpaceOverlayWindow: NSPanel {
         alert.addButton(withTitle: "저장")
         alert.addButton(withTitle: "취소")
 
-        let tf = NSTextField(frame: NSRect(x: 0, y: 0, width: 260, height: 24))
-        tf.stringValue = space.spaceName
-        tf.placeholderString = "Space 이름"
-        alert.accessoryView = tf
-        alert.window.initialFirstResponder = tf
+        let textField = NSTextField(frame: NSRect(x: 0, y: 0, width: 260, height: 24))
+        textField.stringValue = space.spaceName
+        textField.placeholderString = "Space 이름"
+        alert.accessoryView = textField
+        alert.window.initialFirstResponder = textField
 
         let response = alert.runModal()
         if response == .alertFirstButtonReturn {
-            saveName(spaceID: space.spaceID, spaceNumber: space.spaceNumber, name: tf.stringValue)
+            saveName(spaceID: space.spaceID, spaceNumber: space.spaceNumber, name: textField.stringValue)
         }
         scheduleDismiss()
     }
@@ -200,14 +200,14 @@ final class SpaceOverlayWindow: NSPanel {
     // MARK: - Hover
 
     private func setupTrackingArea() {
-        guard let cv = contentView else { return }
-        if let old = trackingArea { cv.removeTrackingArea(old) }
+        guard let contentView = contentView else { return }
+        if let old = trackingArea { contentView.removeTrackingArea(old) }
         let area = NSTrackingArea(
-            rect: cv.bounds,
+            rect: contentView.bounds,
             options: [.mouseEnteredAndExited, .activeAlways, .inVisibleRect],
             owner: self, userInfo: nil
         )
-        cv.addTrackingArea(area)
+        contentView.addTrackingArea(area)
         trackingArea = area
     }
 
@@ -252,10 +252,10 @@ final class SpaceOverlayWindow: NSPanel {
 
     private func positionOnScreen() {
         guard let screen = NSScreen.main else { return }
-        let visible = screen.visibleFrame
-        let x = visible.midX - frame.width / 2
-        let y = visible.midY - frame.height / 2 + visible.height * 0.1
-        setFrameOrigin(NSPoint(x: x, y: y))
+        let visibleFrame = screen.visibleFrame
+        let posX = visibleFrame.midX - frame.width / 2
+        let posY = visibleFrame.midY - frame.height / 2 + visibleFrame.height * 0.1
+        setFrameOrigin(NSPoint(x: posX, y: posY))
     }
 }
 
@@ -269,8 +269,12 @@ struct SpaceOverlayView: View {
 
     private var currentIndex: Int?   { viewModel.spaces.firstIndex(where: { $0.isCurrentSpace }) }
     private var currentSpace: Space? { currentIndex.map { viewModel.spaces[$0] } }
-    private var prevSpace: Space?    { currentIndex.flatMap { $0 > 0 ? viewModel.spaces[$0 - 1] : nil } }
-    private var nextSpace: Space?    { currentIndex.flatMap { $0 < viewModel.spaces.count - 1 ? viewModel.spaces[$0 + 1] : nil } }
+    private var prevSpace: Space? {
+        currentIndex.flatMap { $0 > 0 ? viewModel.spaces[$0 - 1] : nil }
+    }
+    private var nextSpace: Space? {
+        currentIndex.flatMap { $0 < viewModel.spaces.count - 1 ? viewModel.spaces[$0 + 1] : nil }
+    }
 
     var body: some View {
         VStack(spacing: 16) {
@@ -324,7 +328,10 @@ struct SpaceOverlayView: View {
         .padding(.horizontal, 36)
         .padding(.vertical, 24)
         .background { RoundedRectangle(cornerRadius: 22, style: .continuous).fill(.ultraThinMaterial) }
-        .overlay { RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(Color.white.opacity(0.12), lineWidth: 0.5) }
+        .overlay {
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .strokeBorder(Color.white.opacity(0.12), lineWidth: 0.5)
+        }
         .shadow(color: .black.opacity(0.45), radius: 28, x: 0, y: 10)
         .environment(\.colorScheme, .dark)
     }
