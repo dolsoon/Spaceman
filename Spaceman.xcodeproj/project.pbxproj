@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EA798ECBD27D3382ECC87ABC /* SpaceOverlayWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E0313BF2131B662DEFF78A /* SpaceOverlayWindow.swift */; };
 		E828E6552737CBA0007075E8 /* VisualEffectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E828E6542737CBA0007075E8 /* VisualEffectView.swift */; };
 		E828E6582737D2E4007075E8 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E828E6572737D2E4007075E8 /* Constants.swift */; };
 		E87334E9256B51CF0012586E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E87334E8256B51CF0012586E /* AppDelegate.swift */; };
@@ -30,6 +31,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		D9E0313BF2131B662DEFF78A /* SpaceOverlayWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceOverlayWindow.swift; sourceTree = "<group>"; };
 		E828E6542737CBA0007075E8 /* VisualEffectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisualEffectView.swift; sourceTree = "<group>"; };
 		E828E6572737D2E4007075E8 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		E87334E5256B51CF0012586E /* Spaceman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Spaceman.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -95,6 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				E87334E8256B51CF0012586E /* AppDelegate.swift */,
+				D9E0313BF2131B662DEFF78A /* SpaceOverlayWindow.swift */,
 				E8E2AEF5257CB4A500319BBC /* View */,
 				E8E2AEF6257CB4AC00319BBC /* ViewModel */,
 				E8E2AEFC257CB51C00319BBC /* Model */,
@@ -272,6 +275,7 @@
 				E8733507256B57400012586E /* SpaceObserver.swift in Sources */,
 				E8733511256B779B0012586E /* IconCreator.swift in Sources */,
 				E87334E9256B51CF0012586E /* AppDelegate.swift in Sources */,
+				EA798ECBD27D3382ECC87ABC /* SpaceOverlayWindow.swift in Sources */,
 				E8E2AF03257CB5CE00319BBC /* SpaceNameInfo.swift in Sources */,
 				E8EBF091257739ED001BA74F /* PreferencesWindow.swift in Sources */,
 				E8E2AEFF257CB5AF00319BBC /* SpacemanStyle.swift in Sources */,

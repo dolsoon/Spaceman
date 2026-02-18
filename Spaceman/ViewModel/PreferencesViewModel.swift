@@ -27,7 +27,6 @@ class PreferencesViewModel: ObservableObject {
             return
         }
 
-        self.selectedSpace = 0
         guard let decoded = try? PropertyListDecoder().decode([String: SpaceNameInfo].self, from: data) else {
             return
         }
@@ -38,6 +37,9 @@ class PreferencesViewModel: ObservableObject {
         }
 
         sortedSpaceNamesDict = sorted
+
+        // Preserve selectedSpace; only clamp if out of range (e.g. a space was removed)
+        selectedSpace = min(selectedSpace, max(0, sortedSpaceNamesDict.count - 1))
     }
 
     func updateSpace() {

@@ -13,6 +13,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let statusBar = StatusBar()
     private let spaceObserver = SpaceObserver()
     private let iconCreator = IconCreator()
+    private let spaceOverlay = SpaceOverlayWindow()
+
+    // Track the last active space ID to detect actual space changes
+    private var lastActiveSpaceID: String?
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
 
@@ -31,6 +35,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
 extension AppDelegate: SpaceObserverDelegate {
     func didUpdateSpaces(spaces: [Space]) {
+        let currentActiveID = spaces.first(where: { $0.isCurrentSpace })?.spaceID
+
+        // Show overlay only when the active space actually changes (not on launch)
+        if lastActiveSpaceID != nil, currentActiveID != lastActiveSpaceID {
+            spaceOverlay.show(spaces: spaces)
+        }
+
+        lastActiveSpaceID = currentActiveID
+
         let icon = iconCreator.getIcon(for: spaces)
         statusBar.updateStatusBar(withIcon: icon)
     }

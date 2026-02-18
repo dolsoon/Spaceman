@@ -122,7 +122,7 @@ class IconCreator {
 
         for space in spaces {
             let textRect = NSRect(origin: CGPoint.zero, size: iconSize)
-            let spaceText = NSString(string: "\(space.spaceNumber): \(space.spaceName.uppercased())")
+            let spaceText = NSString(string: "\(space.spaceNumber): \(String(space.spaceName.prefix(3)).uppercased())")
             let iconImage = NSImage(size: iconSize)
             let textImage = NSImage(size: iconSize)
 
