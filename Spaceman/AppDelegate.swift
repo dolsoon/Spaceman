@@ -19,6 +19,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     // Track the last active space ID to detect actual space changes
     private var lastActiveSpaceID: String?
 
+    // Track the last space count to detect when spaces are added or removed
+    private var lastSpaceCount: Int?
+
     func applicationDidFinishLaunching(_ aNotification: Notification) {
 
         spaceObserver.delegate = self
@@ -37,13 +40,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 extension AppDelegate: SpaceObserverDelegate {
     func didUpdateSpaces(spaces: [Space]) {
         let currentActiveID = spaces.first(where: { $0.isCurrentSpace })?.spaceID
+        let currentSpaceCount = spaces.count
 
-        // Show overlay only when the active space actually changes (not on launch)
-        if lastActiveSpaceID != nil, currentActiveID != lastActiveSpaceID {
+        // Show overlay when:
+        // 1. The active space changes (not on launch when lastActiveSpaceID is nil)
+        // 2. Space count changes (space added or removed)
+        let spaceCountChanged = lastSpaceCount != nil && currentSpaceCount != lastSpaceCount
+        let activeSpaceChanged = lastActiveSpaceID != nil && currentActiveID != lastActiveSpaceID
+
+        if spaceCountChanged || activeSpaceChanged {
             spaceOverlay.show(spaces: spaces)
         }
 
         lastActiveSpaceID = currentActiveID
+        lastSpaceCount = currentSpaceCount
 
         floatingPanel.update(spaces: spaces)
 

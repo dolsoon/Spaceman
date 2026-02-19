@@ -102,6 +102,8 @@ final class SpaceOverlayWindow: NSPanel {
     private var dismissTimer: Timer?
     private var trackingArea: NSTrackingArea?
     private var previousApp: NSRunningApplication?
+    // Incremented on each show() to invalidate stale dismiss completions
+    private var showGeneration = 0
 
     private let editWindow = EditInputWindow()
     let viewModel = OverlayViewModel()
@@ -125,6 +127,16 @@ final class SpaceOverlayWindow: NSPanel {
     }
 
     func show(spaces: [Space]) {
+        // Invalidate any in-flight dismiss completion from a previous show cycle
+        showGeneration += 1
+        dismissTimer?.invalidate()
+
+        // Cancel any in-flight fade animation by overriding with a zero-duration animation
+        NSAnimationContext.runAnimationGroup { ctx in
+            ctx.duration = 0
+            self.animator().alphaValue = 1
+        }
+
         viewModel.spaces = spaces
 
         if viewModel.isEditing {
@@ -147,7 +159,6 @@ final class SpaceOverlayWindow: NSPanel {
         if let size = contentView?.fittingSize { setContentSize(size) }
         positionOnScreen()
         scheduleDismiss()
-        alphaValue = 1
         orderFrontRegardless()
     }
 
@@ -222,12 +233,15 @@ final class SpaceOverlayWindow: NSPanel {
 
     func scheduleDismiss() {
         dismissTimer?.invalidate()
+        let generation = showGeneration
         dismissTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false) { [weak self] _ in
             guard let self, !self.viewModel.isEditing else { return }
             NSAnimationContext.runAnimationGroup { ctx in
                 ctx.duration = 0.3
                 self.animator().alphaValue = 0
             } completionHandler: {
+                // Skip if a new show() was called during the fade animation
+                guard self.showGeneration == generation else { return }
                 self.orderOut(nil)
                 self.alphaValue = 1
             }
